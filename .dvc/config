@@ -1,4 +1,7 @@
 [core]
     remote = ssh-storage
 ['remote "ssh-storage"']
-    url = ssh://dvc@10.0.2.15/opt/datasets
+    url = ssh://gera@10.0.2.15:/opt/datasets
+    user = gera
+    port = 22
+    keyfile = /home/gera/.ssh/mlops
