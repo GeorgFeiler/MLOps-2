@@ -5,21 +5,21 @@ stages:
     - datasets/raw/train.csv
     - scripts/data_processing/get_features.py
     outs:
-    - datasets/stage1/train.csv
+    - datasets/stage1
   fill-na:
     cmd: python3 scripts/data_processing/fill_na.py datasets/stage1/train.csv
     deps:
     - datasets/stage1/train.csv
     - scripts/data_processing/fill_na.py
     outs:
-    - datasets/stage2/train.csv
+    - datasets/stage2
   change-text-to-numeric:
     cmd: python3 scripts/data_processing/change_text_to_numeric.py datasets/stage2/train.csv
     deps:
     - datasets/stage2/train.csv
     - scripts/data_processing/change_text_to_numeric.py
     outs:
-    - datasets/stage3/train.csv
+    - datasets/stage3
   split:
     cmd: python3 scripts/data_processing/train_test_split.py datasets/stage3/train.csv
     deps:
@@ -29,3 +29,22 @@ stages:
     - split.split_ratio
     outs:
     - datasets/stage4
+  train:
+    cmd: python3 scripts/model_learning/dt.py datasets/stage4/train.csv model.pkl
+    deps:
+    - datasets/stage4/train.csv
+    - scripts/model_learning/dt.py
+    params:
+    - train.max_depth
+    - train.seed
+    outs:
+    - models/model.pkl
+  evaluate:
+    cmd: python3 scripts/model_learning/evaluate.py datasets/stage4/test.csv models/model.pkl
+    deps:
+    - datasets/stage4/test.csv
+    - models/model.pkl
+    - scripts/model_learning/evaluate.py
+    metrics:
+    - evaluate/score.json:
+        cache: false

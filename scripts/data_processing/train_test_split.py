@@ -21,10 +21,18 @@ os.makedirs(os.path.join("datasets", "stage4"), exist_ok=True)
 p_split_ratio = params["split_ratio"]
 
 df = pd.read_csv(f_input)
-x = df.iloc[:, 1:3]
+
+# Разделение данных на признаки и метки
+X = df.iloc[:, 1:]
 y = df.iloc[:, 0]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=p_split_ratio, stratify=y)
 
-pd.concat([y_train, X_train], axis=1).to_csv(f_output_train, header=None, index=None)
-pd.concat([y_test, X_test], axis=1).to_csv(f_output_test, header=None, index=None)
+# Объединение меток и признаков в один DataFrame для train и test наборов
+train_data = pd.concat([y_train, X_train], axis=1)
+test_data = pd.concat([y_test, X_test], axis=1)
+
+# Сохранение данных с заголовками
+train_data.to_csv(f_output_train, header=True, index=False)
+test_data.to_csv(f_output_test, header=True, index=False)
+
