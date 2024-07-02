@@ -1,2 +1,3 @@
 .dvc/cofig.local
-/model.pkl
+/tmp
+/cache
